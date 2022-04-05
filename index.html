@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cf-ip : An Open-Source IP Tracker tool</title>
+    <meta
+      name="description"
+      content="cf-ip tool tracks your IP address, user agent and country code with Cloudflare services. It basically hits cloudflare trace url (https://cloudflare.com/cdn-cgi/trace)."
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      function enableDark() {
+        localStorage.setItem("stop", "yes");
+        localStorage.setItem("theme", "dark");
+        document.body.className = "forcedark";
+      }
+      function disableDark() {
+        localStorage.setItem("stop", "yes");
+        localStorage.setItem("theme", "light");
+        document.body.className = "forcelight";
+      }
+
+      function sourceCode() {
+        window.open("https://github.com/git-Hmmm/cf-ip.git", "_blank");
+      }
+    </script>
+  </head>
+  <body>
+    <script>
+      if (localStorage.getItem("stop") === "yes") {
+        if (localStorage.getItem("theme") === "dark") {
+          document.body.className = "forcedark";
+        } else if (localStorage.getItem("theme") === "light") {
+          document.body.className = "forcelight";
+        }
+      }
+    </script>
+    <button id="darkmodebutton" onclick="enableDark()" class="button-29">
+      Enable Dark Mode
+    </button>
+    <button id="lightmodebutton" onclick="disableDark()" class="button-29">
+      Disable Dark Mode
+    </button>
+    <button onclick="sourceCode()" class="button-29">Source Code</button>
+    <h1>cf-ip : An Open-Source IP Tracker tool</h1>
+    <p>
+      cf-ip tool tracks your IP address, user agent and country code with
+      Cloudflare services. It basically hits
+      <a
+        href="https://cloudflare.com/cdn-cgi/trace"
+        rel="nofollow"
+        target="_blank"
+        >cloudflare trace url</a
+      >.<br />Currently <a href="#">this page</a> is using pages.dev trace url
+      due to cors issues.
+    </p>
+    <span>Your IP Address : </span><span id="ip">Checking...</span><br />
+    <hr />
+    <span>Your User Agent : </span><span id="uag">Checking...</span><br />
+    <hr />
+    <span>Your Locale (Country Code) : </span
+    ><span id="locale">Checking...</span><br />
+    <hr />
+    <script type="application/javascript">
+      $.get("https://pages.dev/cdn-cgi/trace", function (data) {
+        data = data
+          .trim()
+          .split("\n")
+          .reduce(function (obj, pair) {
+            pair = pair.split("=");
+            return (obj[pair[0]] = pair[1]), obj;
+          }, {});
+        var ipjsonfile = data;
+        document.getElementById("ip").innerHTML = ipjsonfile.ip;
+        document.getElementById("uag").innerHTML = ipjsonfile.uag;
+        let countryName = new Intl.DisplayNames(["en"], { type: "region" });
+        document.getElementById("locale").innerHTML =
+          ipjsonfile.loc + " (" + countryName.of(ipjsonfile.loc) + ")";
+      });
+    </script>
+  </body>
+</html>
