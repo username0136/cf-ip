@@ -79,6 +79,9 @@ body {
     body {
         padding: 40px;
     }
+    #lightmodebutton, #darkmodebutton {
+        margin-bottom: 10px;   
+    }
 }
 
 @media (prefers-color-scheme: light) {
